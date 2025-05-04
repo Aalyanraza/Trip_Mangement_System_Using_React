@@ -2,6 +2,8 @@ import { useState } from "react";
 import API from "../api";
 import { useContext } from "react";
 import { UserContext } from "../UserContext";
+import { useNavigate } from "react-router-dom";
+
 
 
 
@@ -10,12 +12,14 @@ function Login() {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const { setUser } = useContext(UserContext);
+  const navigate = useNavigate(); 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       const res = await API.post("/login", { email, password });
       setMessage(res.data.message + " | Welcome, " + res.data.user.name);
       setUser(res.data.user);
+      navigate("/dashboard");  // Redirect to the Trips page after login
     } catch (err) {
       setMessage(err.response?.data?.detail || "Login failed");
     }

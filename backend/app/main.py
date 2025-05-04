@@ -1,13 +1,15 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .database import Base, engine
-from .routes import auth
+from app.database import Base, engine
 from .routes import auth, trip
 from .trip_models import Base as TripBase
 from .routes import itinerary
 from .itinerary_models import Base as ItineraryBase
 from .routes import expenses
 from .expense_models import Base as ExpenseBase
+from app.database import engine
+from .chat_model import Base  as ChatBase # Ensure ChatMessage is imported in this
+from .routes import chat_socket
 
 app = FastAPI()
 
@@ -28,3 +30,5 @@ ItineraryBase.metadata.create_all(bind=engine)
 app.include_router(itinerary.router)
 ExpenseBase.metadata.create_all(bind=engine)
 app.include_router(expenses.router)
+ChatBase.metadata.create_all(bind=engine)
+app.include_router(chat_socket.router)

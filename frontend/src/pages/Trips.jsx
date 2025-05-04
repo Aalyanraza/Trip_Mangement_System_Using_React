@@ -2,10 +2,11 @@ import { useState, useEffect, useContext } from "react";
 import API from "../api";
 import { UserContext } from "../UserContext";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function Trips() {
   const { user, loading } = useContext(UserContext);
-
+  const navigate = useNavigate();
   const [trips, setTrips] = useState([]);
   const [name, setName] = useState("");
   const [destination, setDestination] = useState("");
@@ -24,6 +25,18 @@ function Trips() {
     } catch (err) {
       console.error("Error fetching trips:", err);
     }
+  };
+
+  const shareTrip = (tripId) => {
+    fetch(`http://localhost:8000/trips/${tripId}/invite`, {
+      method: 'POST'
+    })
+      .then(res => res.json())
+      .then(data => {
+        const link = `http://localhost:5173/invite/${data.invite_token}`;
+        navigator.clipboard.writeText(link);
+        alert("Invite link copied!");
+      });
   };
 
   const handleSubmit = async (e) => {
@@ -117,11 +130,22 @@ function Trips() {
                 Edit
               </button>
               <button
+                  onClick={() => navigate(`/trips/${trip.id}/location`)}
+                  className="flex-1 bg-indigo-600 text-sm text-white py-2 px-2 rounded hover:bg-indigo-800"
+                >
+                  Share Location
+                </button>
+              <button
                 onClick={() => handleDelete(trip.id)}
                 className="text-red-600 text-sm hover:underline"
               >
                 Delete
               </button>
+              <button onClick={() => shareTrip(trip.id)}>Share</button>
+              <Link to={`/trips/${trip.id}/chat`} className="text-sm text-green-600 hover:underline">
+  Open Chat
+</Link>
+
             </div>
           </li>
         ))}

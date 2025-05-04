@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, constr
 
 class UserCreate(BaseModel):
     name: str
@@ -7,4 +7,9 @@ class UserCreate(BaseModel):
 
 class UserLogin(BaseModel):
     email: str
+    password: str
+
+
+class UserUpdate(BaseModel):
+    name: str
     password: str
